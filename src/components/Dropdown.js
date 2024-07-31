@@ -1,100 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import Select from 'react-select';
+import { createPortal } from 'react-dom';
+import classNames from 'classnames';
 
-const Dropdown = ({ options, searchable, multiple, customizable, onChange, zIndex }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(multiple ? [] : null);
-  const [search, setSearch] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState(options);
-
-  useEffect(() => {
-    if (searchable) {
-      setFilteredOptions(
-        options.filter(option =>
-          option.label.toLowerCase().includes(search.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredOptions(options);
-    }
-  }, [search, searchable, options]);
-
-  const handleSelect = option => {
-    if (multiple) {
-      setSelected(prev => {
-        const newSelected = prev.includes(option.value)
-          ? prev.filter(val => val !== option.value)
-          : [...prev, option.value];
-        onChange(newSelected);
-        return newSelected;
-      });
-    } else {
-      setSelected(option.value);
-      onChange(option.value);
-      setIsOpen(false);
-    }
+const Dropdown = ({
+  options,
+  isMulti = false,
+  isSearchable = true,
+  onChange,
+  usePortal = false,
+  customOptionRenderer,
+  filterOptions,
+  toggleFeatures = {},
+}) => {
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderColor: state.isFocused ? 'rgb(209, 213, 219)' : 'rgb(229, 231, 235)', // Tailwind gray-300 and gray-200
+      boxShadow: state.isFocused ? '0 0 0 1px rgb(96, 165, 250)' : null, // Tailwind ring-2 ring-blue-400
+      '&:hover': {
+        borderColor: 'rgb(209, 213, 219)', // Tailwind gray-300
+      },
+      padding: '0.5rem',
+      borderRadius: '0.375rem', // Tailwind rounded-md
+    }),
+    menu: (base) => ({
+      ...base,
+      zIndex: 1000,
+    }),
+    option: (base, { isFocused, isSelected }) => ({
+      ...base,
+      backgroundColor: isFocused
+        ? 'rgb(229, 231, 235)' // Tailwind gray-200
+        : isSelected
+        ? 'rgb(209, 213, 219)' // Tailwind gray-300
+        : null,
+      color: 'rgb(31, 41, 55)', // Tailwind gray-800
+      padding: '0.5rem',
+      '&:active': {
+        backgroundColor: 'rgb(209, 213, 219)', // Tailwind gray-300
+      },
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: 'rgb(229, 231, 235)', // Tailwind gray-200
+      borderRadius: '0.375rem', // Tailwind rounded-md
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: 'rgb(31, 41, 55)', // Tailwind gray-800
+    }),
+    multiValueRemove: (base) => ({
+      ...base,
+      color: 'rgb(156, 163, 175)', // Tailwind gray-400
+      '&:hover': {
+        backgroundColor: 'rgb(209, 213, 219)', // Tailwind gray-300
+        color: 'rgb(31, 41, 55)', // Tailwind gray-800
+      },
+    }),
   };
 
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        className="px-4 py-2 border rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {multiple
-          ? (selected.length ? selected.join(', ') : 'Select options')
-          : (selected ? options.find(opt => opt.value === selected)?.label : 'Select an option')}
-      </button>
+  const filteredOptions = filterOptions ? filterOptions(options) : options;
 
-      {isOpen && (
-        <div
-          className={`absolute mt-2 w-full bg-white border border-gray-300 rounded shadow-lg ${zIndex ? `z-${zIndex}` : ''}`}
-        >
-          {searchable && (
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full px-2 py-1 border-b border-gray-300"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          )}
-          <ul className="max-h-60 overflow-y-auto">
-            {filteredOptions.map(option => (
-              <li
-                key={option.value}
-                className={`px-4 py-2 cursor-pointer ${selected.includes(option.value) ? 'bg-blue-100' : ''}`}
-                onClick={() => handleSelect(option)}
-              >
-                {customizable ? option.customRender : option.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+  const DropdownComponent = (
+    <Select
+      options={filteredOptions}
+      isMulti={toggleFeatures.isMulti !== undefined ? toggleFeatures.isMulti : isMulti}
+      isSearchable={toggleFeatures.isSearchable !== undefined ? toggleFeatures.isSearchable : isSearchable}
+      onChange={onChange}
+      styles={customStyles}
+      components={customOptionRenderer ? { Option: customOptionRenderer } : undefined}
+      className="text-sm"
+      classNamePrefix="react-select"
+    />
   );
-};
 
-Dropdown.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    customRender: PropTypes.node,
-  })).isRequired,
-  searchable: PropTypes.bool,
-  multiple: PropTypes.bool,
-  customizable: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
-  zIndex: PropTypes.number,
-};
-
-Dropdown.defaultProps = {
-  searchable: false,
-  multiple: false,
-  customizable: false,
-  zIndex: 50,
+  return usePortal ? createPortal(DropdownComponent, document.body) : DropdownComponent;
 };
 
 export default Dropdown;
