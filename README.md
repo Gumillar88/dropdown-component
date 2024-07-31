@@ -7,26 +7,6 @@
 3. Optionally, run `npm update` to update dependencies to their latest versions
 4. Run `npm run storybook` to start Storybook
 
-## Usage
-
-Import the `Dropdown` component and use it in your project:
-
-```jsx
-import Dropdown from './components/Dropdown';
-
-const options = [
-  { value: 'option1', label: 'Option 1' },
-  { value: 'option2', label: 'Option 2' },
-  // Add more options
-];
-
-<Dropdown
-  options={options}
-  isMulti={true}
-  isSearchable={true}
-  onChange={(selected) => console.log(selected)}
-/>;
-` ``` `
 ## Features
 
 - **Searchable Dropdown:** Allows the dropdown options to be searchable. Enable this feature by setting `isSearchable` to `true`.
@@ -47,3 +27,23 @@ const options = [
 - **customOptionRenderer (function):** Custom function for rendering options.
 - **filterOptions (function):** Custom function for filtering options based on search input.
 - **toggleFeatures (object):** Object to toggle individual features like `isMulti` and `isSearchable`.
+
+## Usage
+
+Import the `Dropdown` component and use it in your project:
+
+```jsx
+import Dropdown from './components/Dropdown';
+
+const options = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  // Add more options
+];
+
+<Dropdown
+  options={options}
+  isMulti={true}
+  isSearchable={true}
+  onChange={(selected) => console.log(selected)}
+/>;
