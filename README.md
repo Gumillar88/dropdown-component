@@ -26,7 +26,7 @@ const options = [
   isSearchable={true}
   onChange={(selected) => console.log(selected)}
 />;
-
+` ``` `
 ## Features
 
 - **Searchable Dropdown:** Allows the dropdown options to be searchable. Enable this feature by setting `isSearchable` to `true`.
