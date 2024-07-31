@@ -1,40 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dropdown Component
 
-## Getting Started
+## Installation
 
-First, run the development server:
+1. Clone the repository
+2. Run `npm install` to install dependencies
+3. Optionally, run `npm update` to update dependencies to their latest versions
+4. Run `npm run storybook` to start Storybook
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Usage
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Import the `Dropdown` component and use it in your project:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```jsx
+import Dropdown from './components/Dropdown';
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+const options = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  // Add more options
+];
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<Dropdown
+  options={options}
+  isMulti={true}
+  isSearchable={true}
+  onChange={(selected) => console.log(selected)}
+/>;
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Features
 
-## Learn More
+- **Searchable Dropdown:** Allows the dropdown options to be searchable. Enable this feature by setting `isSearchable` to `true`.
+- **Portal Support:** Allows the dropdown to render in a different DOM tree. This is useful for rendering the dropdown menu outside of its parent container to avoid clipping issues. Enable this feature by setting `usePortal` to `true`.
+- **Single or Multiple Selection:** Supports both single and multiple selection modes. Enable multiple selection by setting `isMulti` to `true`.
+- **Customizable Option Rendering:** Allows customization of how the options are rendered. Use the `customOptionRenderer` prop to provide a custom rendering function.
+- **Search Filtering:** Allows custom filtering of options based on search input. Use the `filterOptions` prop to provide a custom filter function.
+- **Toggle Features:** Allows individual features like multi-selection and search to be toggled on or off using the `toggleFeatures` prop.
+- **Z-Index Compatibility:** Ensures that the dropdown menu works correctly with elements that have a high z-index value by setting a high z-index for the menu.
 
-To learn more about Next.js, take a look at the following resources:
+## Props
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **options (array):** The options to display in the dropdown. Each option should be an object with `value` and `label` properties.
+- **isMulti (boolean):** Enables multiple selection mode. Default is `false`.
+- **isSearchable (boolean):** Enables search functionality. Default is `true`.
+- **onChange (function):** Callback function that is called when the selected options change.
+- **usePortal (boolean):** Enables portal support for rendering the dropdown menu outside of its parent container. Default is `false`.
+- **customOptionRenderer (function):** Custom function for rendering options.
+- **filterOptions (function):** Custom function for filtering options based on search input.
+- **toggleFeatures (object):** Object to toggle individual features like `isMulti` and `isSearchable`.
